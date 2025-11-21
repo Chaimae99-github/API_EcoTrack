@@ -276,16 +276,20 @@ password=<password>
 ## Moyenne
 
 ```
-GET /stats/average?indicator_type=PM10&zone_id=1
+GET /stats/average?indicator_type=temperature&zone_id=1
 ```
 
 Réponse :
 
 ```json
 {
-  "indicator_type": "PM10",
-  "average": 42.5,
-  "count": 3
+  "indicator_type": "temperature",
+  "zone_id": 1,
+  "source_id": null,
+  "from_date": null,
+  "to_date": null,
+  "average": 9,
+  "count": 2
 }
 ```
 
@@ -299,9 +303,42 @@ Formaté pour les graphes :
 
 ```json
 {
-  "labels": ["2025-11-20", "2025-11-21"],
+  "indicator_type": "temperature",
+  "group_by": "day",
+  "from_date": null,
+  "to_date": null,
+  "zone_id": null,
+  "labels": [
+    "2025-11-19",
+    "2025-11-20",
+    "2025-11-21"
+  ],
   "series": [
-    { "name": "temperature average", "data": [20.5, 21.2] }
+    {
+      "name": "temperature average",
+      "data": [
+        9,
+        3.8083333333333336,
+        2.461224489795918
+      ]
+    }
+  ],
+  "raw_points": [
+    {
+      "period": "2025-11-19",
+      "average": 9,
+      "count": 2
+    },
+    {
+      "period": "2025-11-20",
+      "average": 3.8083333333333336,
+      "count": 48
+    },
+    {
+      "period": "2025-11-21",
+      "average": 2.461224489795918,
+      "count": 49
+    }
   ]
 }
 ```
