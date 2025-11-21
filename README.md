@@ -127,6 +127,7 @@ API_ecotrack/
         csv_pollution.py
     scripts/
       init_db.py
+      init_db.py
     frontend/
       index.html
       app.js
