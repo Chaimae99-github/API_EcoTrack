@@ -1,0 +1,5 @@
+date,zone_name,postal_code,indicator_type,value,unit
+2025-11-20T10:00:00,Paris,75000,PM10,35,µg/m3
+2025-11-20T11:00:00,Paris,75000,PM10,40,µg/m3
+2025-11-21T09:00:00,Paris,75000,PM2.5,18,µg/m3
+

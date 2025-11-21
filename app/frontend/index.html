@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>EcoTrack Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Chart.js pour les graphiques -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem;
+      background: #f5f5f5;
+    }
+    h1, h2 {
+      color: #333;
+    }
+    .card {
+      background: white;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    }
+    label {
+      display: block;
+      margin: 0.3rem 0 0.1rem;
+      font-size: 0.9rem;
+    }
+    input, select, button {
+      padding: 0.4rem 0.5rem;
+      margin-bottom: 0.4rem;
+      font-size: 0.9rem;
+    }
+    button {
+      cursor: pointer;
+      border-radius: 4px;
+      border: none;
+      background: #2563eb;
+      color: white;
+    }
+    button.secondary {
+      background: #6b7280;
+    }
+    button + button {
+      margin-left: 0.4rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 0.4rem;
+      text-align: left;
+    }
+    th {
+      background: #f3f4f6;
+    }
+    .status {
+      font-size: 0.85rem;
+      margin-top: 0.2rem;
+    }
+    .status.ok { color: green; }
+    .status.error { color: red; }
+    .flex {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .flex > div {
+      flex: 1 1 250px;
+    }
+  </style>
+</head>
+<body>
+  <h1>EcoTrack Dashboard</h1>
+
+  <!-- Carte Login -->
+  <div class="card">
+    <h2>Connexion</h2>
+    <form id="login-form">
+      <label for="email">Email</label>
+      <input type="email" id="email" value="admin@ecotrack.com" required />
+
+      <label for="password">Mot de passe</label>
+      <input type="password" id="password" value="123456" required />
+
+      <button type="submit">Se connecter</button>
+      <button type="button" class="secondary" id="logout-btn">Se déconnecter</button>
+
+      <div id="login-status" class="status"></div>
+    </form>
+  </div>
+
+  <!-- Carte actions de base -->
+  <div class="card">
+    <h2>Données</h2>
+    <button type="button" id="load-zones-btn">Charger les zones</button>
+    <button type="button" id="load-sources-btn">Charger les sources</button>
+    <button type="button" id="load-indicators-btn">Charger les indicateurs (10 derniers)</button>
+    <div id="basic-status" class="status"></div>
+  </div>
+
+  <div class="flex">
+    <div class="card">
+      <h2>Zones</h2>
+      <ul id="zones-list"></ul>
+    </div>
+
+    <div class="card">
+      <h2>Sources</h2>
+      <ul id="sources-list"></ul>
+    </div>
+  </div>
+
+  <!-- Carte Indicators -->
+  <div class="card">
+    <h2>Indicateurs (liste)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Type</th>
+          <th>Valeur</th>
+          <th>Unité</th>
+          <th>Zone</th>
+          <th>Source</th>
+          <th>Timestamp</th>
+        </tr>
+      </thead>
+      <tbody id="indicators-table-body">
+      </tbody>
+    </table>
+  </div>
+
+
+
+
+  <!-- Carte Création d'indicateur -->
+  <div class="card">
+    <h2>Créer un indicateur</h2>
+    <form id="create-indicator-form">
+      <div class="flex">
+        <div>
+          <label for="ci-type">Type</label>
+          <input type="text" id="ci-type" value="temperature" required />
+        </div>
+        <div>
+          <label for="ci-value">Valeur</label>
+          <input type="number" step="0.01" id="ci-value" required />
+        </div>
+        <div>
+          <label for="ci-unit">Unité</label>
+          <input type="text" id="ci-unit" value="°C" required />
+        </div>
+      </div>
+
+      <div class="flex">
+        <div>
+          <label for="ci-zone-id">Zone ID</label>
+          <input type="number" id="ci-zone-id" required />
+        </div>
+        <div>
+          <label for="ci-source-id">Source ID</label>
+          <input type="number" id="ci-source-id" required />
+        </div>
+        <div>
+          <label for="ci-timestamp">Timestamp</label>
+          <input type="datetime-local" id="ci-timestamp" required />
+        </div>
+      </div>
+
+      <label for="ci-extra">Extra data (JSON optionnel)</label>
+      <input type="text" id="ci-extra" placeholder='{"sensor":"capteur_1"}' />
+
+      <button type="submit">Créer l'indicateur</button>
+      <div id="create-indicator-status" class="status"></div>
+    </form>
+  </div>
+
+
+
+
+  <!-- Carte Stats -->
+  <div class="card">
+    <h2>Statistiques (série temporelle)</h2>
+
+    <form id="stats-form">
+      <div class="flex">
+        <div>
+          <label for="stat-indicator-type">Type d'indicateur</label>
+          <input type="text" id="stat-indicator-type" value="temperature" />
+        </div>
+        <div>
+          <label for="stat-group-by">Group by</label>
+          <select id="stat-group-by">
+            <option value="day">Jour</option>
+            <option value="month">Mois</option>
+          </select>
+        </div>
+        <div>
+          <label for="stat-zone-id">Zone ID (optionnel)</label>
+          <input type="number" id="stat-zone-id" />
+        </div>
+      </div>
+      <div class="flex">
+        <div>
+          <label for="stat-from-date">From date (optionnel)</label>
+          <input type="datetime-local" id="stat-from-date" />
+        </div>
+        <div>
+          <label for="stat-to-date">To date (optionnel)</label>
+          <input type="datetime-local" id="stat-to-date" />
+        </div>
+      </div>
+
+      <button type="submit">Charger la série</button>
+      <div id="stats-status" class="status"></div>
+    </form>
+
+    <canvas id="stats-chart" height="120"></canvas>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
