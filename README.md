@@ -31,7 +31,7 @@ Le projet met en œuvre :
 * [Tests](#tests)
 * [Front-end](#front-end)
 * [Améliorations possibles](#améliorations-possibles)
-* [Résumé pour le professeur](#résumé-pour-le-professeur)
+
 
 ---
 
